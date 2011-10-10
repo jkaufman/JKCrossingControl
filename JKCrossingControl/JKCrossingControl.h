@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+enum {
+    JKControlEventCrossUp           = 1 << 24,
+    JKControlEventCrossDown         = 1 << 25,
+    JKControlEventCrossLeft         = 1 << 26,
+    JKControlEventCrossRight        = 1 << 27,
+    JKControlEventCrossVertical     = JKControlEventCrossUp | JKControlEventCrossDown,
+    JKControlEventCrossHorziontal   = JKControlEventCrossLeft| JKControlEventCrossRight,
+    JKControlAllCrossingEvents      = UIControlEventApplicationReserved,
+};
+typedef NSUInteger JKControlEvent;
+
 @class JKCrossingGestureRecognizer;
 
 @interface JKCrossingControl : UIControl {

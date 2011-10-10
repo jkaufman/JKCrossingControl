@@ -18,6 +18,7 @@
 - (void)dealloc
 {
     [_testView release];
+    [_testSwitch release];
     [super dealloc];
 }
 
@@ -49,7 +50,7 @@
     crossingRecognizer.crossingRegion = _testView.frame;
     crossingRecognizer.recognizedDirections = JKCrossingGestureRecognizerDirectionUp;
     [[_testView topmostContainingView] addGestureRecognizer:crossingRecognizer];
-
+  
     // Watch switch for value change events. The switch accepts standard touch events as well as crossing gestures.
     [self.testSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
 }
@@ -71,6 +72,7 @@
 {
     [super viewDidUnload];
 
+    [_testView release];
     self.testSwitch = nil;
 }
 

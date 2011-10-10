@@ -14,6 +14,7 @@
 
 @property (nonatomic, assign) CGPoint location;
 @property (nonatomic, assign) CGFloat velocity;
+@property (nonatomic, assign) CGFloat dragDistance;
 @property (nonatomic, assign) JKCrossingGestureRecognizerDirection direction;
 
 @end
@@ -28,6 +29,7 @@
 
 @synthesize location = _location;
 @synthesize velocity = _velocity;
+@synthesize dragDistance = _dragDistance;
 @synthesize direction = _direction;
 
 const CGFloat kDefaultMinimumCrossingGestureDistance = 25;
@@ -37,9 +39,9 @@ const NSTimeInterval kDefaultMaximumInactiveInterval = 0.5;
 
 - (id)initWithTarget:(id)target action:(SEL)action {
     if ((self = [super initWithTarget:target action:action])) {
-        self.minimumCrossingDistance = kDefaultMinimumCrossingGestureDistance;
-        self.maximumInactiveInterval = kDefaultMaximumInactiveInterval;
-        self.crossingRegion = CGRectZero;
+        _minimumCrossingDistance = kDefaultMinimumCrossingGestureDistance;
+        _maximumInactiveInterval = kDefaultMaximumInactiveInterval;
+        _crossingRegion = CGRectZero;
     }
     return self;
 }
@@ -157,7 +159,7 @@ JKCrossingGestureRecognizerDirection directionOfDrag(CGPoint first, CGPoint seco
     // Fail on linger.
     NSTimeInterval delta = event.timestamp - _lastTouchTime;
     _lastTouchTime = event.timestamp;
-    if (delta > self.maximumInactiveInterval) {
+    if (self.maximumInactiveInterval > 0 && delta > self.maximumInactiveInterval) {
         self.state = UIGestureRecognizerStateFailed;
         return;
     }
@@ -176,16 +178,16 @@ JKCrossingGestureRecognizerDirection directionOfDrag(CGPoint first, CGPoint seco
     if (_traversed) {
         // Update total distance of drag following crossing.
         CGFloat latestDragDistance = distanceBetweenPoints(dragLocation, [_touch previousLocationInView:self.view]);
-        _dragDistance += latestDragDistance;
+        self.dragDistance += latestDragDistance;
         
         // Update values provided to gesture delegate.
         self.velocity = latestDragDistance / delta;
         self.location = locationOfPointInRect(dragLocation, self.crossingRegion);
         
         // Check if minimum drag distance statisfied.
-        if (_dragDistance >= self.minimumCrossingDistance) {
+        if (self.dragDistance >= self.minimumCrossingDistance) {
             // Check if angle satisfied, measuring as a straight line from the initial touch down location.
-            // The drag segment within the crossing region bounds isn't long enoug to be accurate.
+            // The drag segment within the crossing region bounds isn't long enough to be accurate.
             JKCrossingGestureRecognizerDirection dragDirection = directionOfDrag(_anchorPoint, dragLocation);
             if (self.recognizedDirections & dragDirection) {
                 self.direction = dragDirection;
@@ -221,11 +223,12 @@ JKCrossingGestureRecognizerDirection directionOfDrag(CGPoint first, CGPoint seco
 - (void)reset {
     [super reset];
 
+    self.location = CGPointZero;
     self.velocity = 0;
+    self.dragDistance = 0;
     self.direction = 0;
     _lastTouchTime = 0;
     _traversed = NO;
-    _dragDistance = 0;
     _anchorPoint = CGPointZero;
     _touch = nil;
 }

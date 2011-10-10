@@ -24,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06A5DC2F1442AA6200B17210 /* JKCrossingControlSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JKCrossingControlSubclass.h; path = JKCrossingControl/JKCrossingControlSubclass.h; sourceTree = SOURCE_ROOT; };
 		06D6063D141F00C200302C5A /* JKCrossingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JKCrossingControl.h; path = JKCrossingControl/JKCrossingControl.h; sourceTree = SOURCE_ROOT; };
 		06D6063E141F00C200302C5A /* JKCrossingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JKCrossingControl.m; path = JKCrossingControl/JKCrossingControl.m; sourceTree = SOURCE_ROOT; };
 		06D6063F141F00C200302C5A /* JKCrossingGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JKCrossingGestureRecognizer.h; path = JKCrossingControl/JKCrossingGestureRecognizer.h; sourceTree = SOURCE_ROOT; };
@@ -69,6 +70,7 @@
 			children = (
 				06D6063D141F00C200302C5A /* JKCrossingControl.h */,
 				06D6063E141F00C200302C5A /* JKCrossingControl.m */,
+				06A5DC2F1442AA6200B17210 /* JKCrossingControlSubclass.h */,
 				06D6063F141F00C200302C5A /* JKCrossingGestureRecognizer.h */,
 				06D60640141F00C200302C5A /* JKCrossingGestureRecognizer.m */,
 				06D60641141F00C200302C5A /* JKCrossingSwitch.h */,

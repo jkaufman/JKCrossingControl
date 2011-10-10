@@ -6,7 +6,7 @@
 //  Copyright 2011 Justin Kaufman. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 // Begins:  when one touch has moved enough within the crossing region to be considered a drag
 // Changes: when this finger moves
@@ -45,11 +45,12 @@ typedef enum {
 @property (nonatomic, assign) BOOL canStartWithinCrossingRegion;                            // Whether it is acceptable for the initial touch to be within the crossing region.
 @property (nonatomic, assign) JKCrossingGestureRecognizerDirection recognizedDirections;    // Acceptable directions for gesture.
 @property (nonatomic, assign) CGFloat minimumCrossingDistance;                              // Distance that the touch must track within the given region before it is recognized.
-@property (nonatomic, assign) NSTimeInterval maximumInactiveInterval;                        // Maximum period of inactivity before the gesture is rejected.
+@property (nonatomic, assign) NSTimeInterval maximumInactiveInterval;                       // Maximum period of inactivity before the gesture is rejected.
 
 // Gesture recognizer state.
 @property (nonatomic, readonly) CGPoint location;                                           // Location of drag within the crossing region, measured from origin (top-left).
 @property (nonatomic, readonly) CGFloat velocity;                                           // Instantaneous velocity of the drag in offset/second (available on begin).
+@property (nonatomic, readonly) CGFloat dragDistance;                                       // Accumulated distance of drag following crossing.
 @property (nonatomic, readonly) JKCrossingGestureRecognizerDirection direction;             // Direction of gesture (available upon recognition).
 
 @end

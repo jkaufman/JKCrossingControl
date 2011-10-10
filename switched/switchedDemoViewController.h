@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class JKCrossingSwitch;
+@class JKCrossingControl;
 
 @interface switchedDemoViewController : UIViewController {
     JKCrossingSwitch *_testSwitch;

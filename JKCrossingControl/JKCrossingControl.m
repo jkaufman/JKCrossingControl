@@ -15,7 +15,8 @@
 @property (nonatomic, retain) JKCrossingGestureRecognizer *crossingRecognizer;
 @property (nonatomic, assign) CGSize crossingRegionInset;
 
-- (void)configureRecognizer;
+- (void)configureControl;
+- (void)crossingGestureChanged:(JKCrossingGestureRecognizer *)recognizer;
 
 @end
 
@@ -26,28 +27,25 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        [self configureRecognizer];
+        [self configureControl];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if ((self = [super initWithCoder:aDecoder])) {
-        [self configureRecognizer];
+        [self configureControl];
     }
     return self;
 }
 
-- (void)configureRecognizer {
-    // Subclasses may override this method but must call [super configureRecognizer] before performing their own customizations.
-    self.crossingRecognizer = [[[JKCrossingGestureRecognizer alloc] initWithTarget:self action:@selector(crossedRegion:)] autorelease];
-
-    // NOTE: All readwrite properties of JKCrossingGestureRecognizer may be modified with the exception of crossingRegion. Subclasses
-    // that wish to grow or shrink the recognition region should set |crossingRegionInset|. This must be done within |-configureRecognizer|.
+- (void)configureControl {
+    self.crossingRecognizer = [[[JKCrossingGestureRecognizer alloc] initWithTarget:self action:@selector(crossingGestureChanged:)] autorelease];
+    self.crossingRecognizer.recognizedDirections = JKCrossingGestureRecognizerDirectionUp | JKCrossingGestureRecognizerDirectionDown; // Default to vertical gestures.
 }
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
-    // Remove gesture recognizer from currnet view.
+    // Remove gesture recognizer from current view.
     [[self topmostContainingView] removeGestureRecognizer:self.crossingRecognizer];
 }
 - (void)didMoveToWindow {    
@@ -57,26 +55,24 @@
     self.crossingRecognizer.crossingRegion = [topmostView convertRect:CGRectInset(self.frame, self.crossingRegionInset.width, self.crossingRegionInset.height) fromView:self.superview];
 }
 
-- (void)crossedRegion:(JKCrossingGestureRecognizer *)recognizer {
-    NSAssert(0, @"JKCrossingControl: Subclasses must override |-crossedRegion:|");
-
-    // Subclasses should override |-crossedRegion:| and act on the gesture state.
-    // Several readonly JKCrossingGestureRecognizer properties are of interest to subclasses:
-    //   state (began)
-    //     The state of the gesture recognizer. See UIGestureRecognizer docs for details.
-    //     Subclasses may ignore states other than UIGestureRecognizerStateEnded.
-    //   location
-    //     First available: began
-    //     Description: The location of the candidate touch within this control's frame.
-    //     Example use: A switch may use location to update the position of its nub during the drag.
-    //   velocity 
-    //     First available: changed
-    //     Description: Instantaneous gesture velocity in px/s, calculated using the last two touch events.
-    //     Example use: A switch may use this speed, or several readings, to animate the dragging or flicking of its nub.
-    //   direction
-    //     First available: ended
-    //     Description: The gesture's observed heading (left/up/right/down).
-    //     Example use: A switch supports left and right gestures, but should only switch OFF if swiped left.
+- (void)crossingGestureChanged:(JKCrossingGestureRecognizer *)recognizer {
+    // Send actions associated with the successful gesture once it has ended.
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        switch (recognizer.direction) {
+            case JKCrossingGestureRecognizerDirectionLeft:
+                [self sendActionsForControlEvents:JKControlEventCrossLeft];
+                break;
+            case JKCrossingGestureRecognizerDirectionRight:
+                [self sendActionsForControlEvents:JKControlEventCrossRight];
+                break;
+            case JKCrossingGestureRecognizerDirectionUp:
+                [self sendActionsForControlEvents:JKControlEventCrossUp];
+                break;
+            case JKCrossingGestureRecognizerDirectionDown:
+                [self sendActionsForControlEvents:JKControlEventCrossDown];
+                break;
+        }
+    }
 }
 
 - (void)dealloc {
